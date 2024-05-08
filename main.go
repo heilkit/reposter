@@ -146,7 +146,7 @@ func main() {
 		return bot.React(ctx.Message(), tg.ReactionLike)
 	})
 
-	admins.Handle("/chat", func(ctx tg.Context) error {
+	addChat := func(ctx tg.Context) error {
 		if len(ctx.Args()) == 0 {
 			return ctx.Reply("no id, provide it in the same message, /help?")
 		}
@@ -158,6 +158,20 @@ func main() {
 			return ctx.Reply("error addng to cfg")
 		}
 		return bot.React(ctx.Message(), tg.ReactionLike)
+	}
+	admins.Handle("/chat", addChat)
+	admins.Handle("/add", addChat)
+
+	admins.Handle("/shutdown", func(ctx tg.Context) error {
+		if len(ctx.Args()) == 0 {
+			return ctx.Reply("no id, send /shutdown with your id to shutdown, /help?")
+		}
+		bot.Stop()
+		return nil
+	})
+
+	bot.Handle("/ok", func(ctx tg.Context) error {
+		return ctx.Reply("OK")
 	})
 
 	forward := func(cs tg.Contexts) error {
