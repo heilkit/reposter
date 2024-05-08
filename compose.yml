@@ -1,0 +1,12 @@
+# sudo docker compose --env-file .env --env-file ~/.env up --no-deps --build -d
+services:
+  flop-reposter:
+    build: .
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '0.05'
+          memory: '50M'
+    volumes:
+      - ./data/:/app/data/
