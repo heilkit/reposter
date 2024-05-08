@@ -170,6 +170,14 @@ func main() {
 		return nil
 	})
 
+	admins.Handle("/ls", func(ctx tg.Context) error {
+		data, err := json.MarshalIndent(cfg.Chats, "", "  ")
+		if err != nil {
+			return bot.React(ctx.Message(), tg.ReactionDislike)
+		}
+		return ctx.Reply(string(data))
+	})
+
 	bot.Handle("/ok", func(ctx tg.Context) error {
 		return ctx.Reply("OK")
 	})
@@ -187,6 +195,9 @@ func main() {
 	}
 
 	bot.Group(middleware.Public()).HandleAlbum(forward, tg.OnChannelPost)
+	bot.Group(middleware.Public()).Handle(tg.OnText, func(ctx tg.Context) error {
+		return forward(tg.Contexts{ctx})
+	})
 
 	bot.Start()
 }
